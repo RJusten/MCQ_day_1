@@ -185,6 +185,9 @@ export default function SimpleMcqTestTool() {
   const quizCount = quizQuestions.length;
   const quizFinished = quizCount > 0 && currentIndex >= quizCount;
 
+  const progressPercent =
+    quizCount > 0 ? Math.min((score.answered / quizCount) * 100, 100) : 0;
+
   function startQuiz() {
     if (allQuestions.length === 0) return;
 
@@ -252,138 +255,171 @@ export default function SimpleMcqTestTool() {
   }
 
   return (
-    <div
-      style={{
-        padding: 24,
-        fontFamily: "Arial, sans-serif",
-        maxWidth: 1100,
-        margin: "0 auto",
-      }}
-    >
-      <h1>Prüfungsvorbereitung Gruppenführer</h1>
-      <h2>Kurs 0801 und 0802</h2>
+    <div className="app-shell">
+      <div className="app-container">
+        <section className="hero-card">
+          <h1 className="hero-title">Prüfungsvorbereitung Gruppenführer</h1>
+          <p className="hero-subtitle">Kurs 0801 und 0802</p>
 
-      <div style={{ marginBottom: 20 }}>
-        <div>Fragen in der Datenbank: {totalDatabankCount}</div>
-        <div>Beantwortet: {score.answered}</div>
-        <div>Richtig: {score.correct}</div>
-        <div>Falsch: {score.wrong}</div>
-        {quizCount > 0 && !quizFinished && (
-          <div>
-            Aktuelle Frage: {currentIndex + 1} / {quizCount}
+          <div className="stats-grid">
+            <div className="stat-card">
+              <div className="stat-label">Fragen in der Datenbank</div>
+              <div className="stat-value">{totalDatabankCount}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Beantwortet</div>
+              <div className="stat-value">{score.answered}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Richtig</div>
+              <div className="stat-value">{score.correct}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Falsch</div>
+              <div className="stat-value">{score.wrong}</div>
+            </div>
           </div>
-        )}
-        {quizFinished && <div>Quiz abgeschlossen: {quizCount} / {quizCount}</div>}
-      </div>
+        </section>
 
-      <div
-        style={{
-          display: "flex",
-          gap: 12,
-          alignItems: "end",
-          flexWrap: "wrap",
-          marginBottom: 20,
-          padding: 16,
-          border: "1px solid #ddd",
-          borderRadius: 8,
-        }}
-      >
-        <div>
-          <label htmlFor="quiz-size" style={{ display: "block", marginBottom: 6 }}>
-            Anzahl der Fragen
-          </label>
-          <input
-            id="quiz-size"
-            type="number"
-            min={1}
-            max={totalDatabankCount || 1}
-            value={quizSizeInput}
-            onChange={(e) => setQuizSizeInput(e.target.value)}
-            style={{ padding: 8, width: 140 }}
-          />
-        </div>
+        <section className="panel-card">
+          <div className="controls-row">
+            <div className="input-group">
+              <label htmlFor="quiz-size" className="input-label">
+                Anzahl der Fragen
+              </label>
+              <input
+                id="quiz-size"
+                className="number-input"
+                type="number"
+                min={1}
+                max={totalDatabankCount || 1}
+                value={quizSizeInput}
+                onChange={(e) => setQuizSizeInput(e.target.value)}
+              />
+            </div>
 
-        <button onClick={startQuiz}>Quiz starten</button>
+            <button className="btn btn-primary" onClick={startQuiz}>
+              Quiz starten
+            </button>
 
-        <button onClick={resetCurrentQuiz} disabled={quizCount === 0}>
-          Quiz zurücksetzen
-        </button>
-      </div>
+            <button
+              className="btn btn-neutral"
+              onClick={resetCurrentQuiz}
+              disabled={quizCount === 0}
+            >
+              Quiz zurücksetzen
+            </button>
+          </div>
+        </section>
 
-      <div style={{ marginTop: 20, border: "1px solid #ddd", padding: 16, borderRadius: 8 }}>
-        {quizCount === 0 ? (
-          <p>Bitte zuerst die gewünschte Anzahl an Fragen eingeben und „Quiz starten“ klicken.</p>
-        ) : quizFinished ? (
-          <div>
-            <h3>Quiz abgeschlossen</h3>
-            <p>
-              Ergebnis: {score.correct} richtig, {score.wrong} falsch
+        <section className="panel-card">
+          {quizCount === 0 ? (
+            <p className="empty-state">
+              Bitte zuerst die gewünschte Anzahl an Fragen eingeben und „Quiz starten“ klicken.
             </p>
-            <p>Für ein neues zufälliges Set einfach oben erneut auf „Quiz starten“ klicken.</p>
-          </div>
-        ) : !currentQuestion ? (
-          <p>Es sind keine Fragen geladen.</p>
-        ) : (
-          <div>
-            <h3>{currentQuestion.question}</h3>
-
-            <div style={{ marginTop: 10 }}>
-              {currentQuestion.options.map((option, i) => (
-                <div key={i} style={{ marginBottom: 8 }}>
-                  <label style={{ cursor: result ? "default" : "pointer" }}>
-                    <input
-                      type="checkbox"
-                      checked={selected.includes(i)}
-                      onChange={() => toggleAnswer(i)}
-                      disabled={!!result}
-                    />{" "}
-                    <strong>{String.fromCharCode(65 + i)}.</strong> {option}
-                  </label>
+          ) : quizFinished ? (
+            <div>
+              <div className="progress-wrap">
+                <div className="progress-top">
+                  <span>Quiz abgeschlossen</span>
+                  <span>{quizCount} / {quizCount}</span>
                 </div>
-              ))}
-            </div>
-
-            <div style={{ marginTop: 12 }}>
-              <button
-                onClick={checkAnswer}
-                disabled={selected.length === 0 || !!result}
-              >
-                Antwort prüfen
-              </button>
-
-              <button
-                onClick={nextQuestion}
-                disabled={!result}
-                style={{ marginLeft: 10 }}
-              >
-                Nächste Frage
-              </button>
-            </div>
-
-            {result && (
-              <div
-                style={{
-                  marginTop: 12,
-                  padding: 12,
-                  borderRadius: 6,
-                  background: result === "correct" ? "#ecfdf5" : "#fef2f2",
-                  border: "1px solid #ddd",
-                }}
-              >
-                {result === "correct" ? (
-                  <strong>Richtig.</strong>
-                ) : (
-                  <>
-                    <strong>Falsch.</strong>
-                    <div style={{ marginTop: 8 }}>
-                      Richtige Antwort(en): {formatCorrectAnswers(currentQuestion)}
-                    </div>
-                  </>
-                )}
+                <div className="progress-bar">
+                  <div className="progress-bar-fill" style={{ width: "100%" }} />
+                </div>
               </div>
-            )}
-          </div>
-        )}
+
+              <h3 className="question-title">Stark gemacht.</h3>
+              <p className="empty-state">
+                Ergebnis: {score.correct} richtig, {score.wrong} falsch
+              </p>
+              <p className="empty-state">
+                Für ein neues zufälliges Set einfach oben erneut auf „Quiz starten“ klicken.
+              </p>
+            </div>
+          ) : !currentQuestion ? (
+            <p className="empty-state">Es sind keine Fragen geladen.</p>
+          ) : (
+            <div>
+              <div className="progress-wrap">
+                <div className="progress-top">
+                  <span>Frage {currentIndex + 1} von {quizCount}</span>
+                  <span>{Math.round(progressPercent)}%</span>
+                </div>
+                <div className="progress-bar">
+                  <div
+                    className="progress-bar-fill"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+              </div>
+
+              <h3 className="question-title">{currentQuestion.question}</h3>
+
+              <div className="answers-list">
+                {currentQuestion.options.map((option, i) => (
+                  <div key={i} className="answer-option">
+                    <label className="answer-label">
+                      <input
+                        type="checkbox"
+                        checked={selected.includes(i)}
+                        onChange={() => toggleAnswer(i)}
+                        disabled={!!result}
+                      />
+                      <span>
+                        <span className="answer-letter">
+                          {String.fromCharCode(65 + i)}.
+                        </span>{" "}
+                        {option}
+                      </span>
+                    </label>
+                  </div>
+                ))}
+              </div>
+
+              <div className="actions-row">
+                <button
+                  className="btn btn-primary"
+                  onClick={checkAnswer}
+                  disabled={selected.length === 0 || !!result}
+                >
+                  Antwort prüfen
+                </button>
+
+                <button
+                  className="btn btn-secondary"
+                  onClick={nextQuestion}
+                  disabled={!result}
+                >
+                  Nächste Frage
+                </button>
+              </div>
+
+              {result && (
+                <div
+                  className={`feedback-box ${
+                    result === "correct" ? "feedback-correct" : "feedback-wrong"
+                  }`}
+                >
+                  {result === "correct" ? (
+                    <strong>Richtig.</strong>
+                  ) : (
+                    <>
+                      <strong>Falsch.</strong>
+                      <div style={{ marginTop: 8 }}>
+                        Richtige Antwort(en): {formatCorrectAnswers(currentQuestion)}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+
+        <div className="footer-note">
+          Ausschließlich entwickelt für die Prüfungsvorbereitung Gruppenführer E-Learning März 2026 · <strong>Powered by Richie 🚒</strong>
+        </div>
       </div>
     </div>
   );
