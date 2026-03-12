@@ -10,6 +10,12 @@ type Question = {
 
 const PRELOADED_CSV = `Frage,OptionA,OptionB,OptionC,OptionD,Korrekt
 "Ein Täuschungsalarm ist ein ordnungsgemäßes Auslösen der Brandmeldeanlage ohne reales Feuer und damit einem notwendigen Eingreifen der Feuerwehr in Form von Lösch- oder Rettungsmaßnahmen.","Wahr","Falsch","","","A"
+"Ab welchem Zeitraum spricht man von einer Belastungsstörung / Traumafolgestörung?","Stunden","Tage","Monate/Jahre","","C"
+"In welche Bereiche (Kategorien) teilt sich das System PSNV auf?","PSNV-E (Einsatzkräfte)","PSNV-B (Betroffene)","Krisenintervention","Feuerwehrseelsorge","A;B"
+"Was können körperliche Reaktionen auf aussergewöhnliche Belastungen sein?","regelmäßig wiederkehrende Erinnerungen (Flashbacks)","Schlafprobleme","Blendempfindlichkeit","Müdigkeit, Erschöpfung","","A;B;D"
+"Was sollte der Gruppenführer in Hinblick auf die PSNV an der Einsatzstelle tun?","PSNV Kräfte anfordern (PSNV E und PSNV B)","belastete Personen erkennen, auch Betroffene","Der PSNV Bereich wird vollständig durch PSNV Fachkräfte geregelt.","Ausschließlich die Einsatzleitung befindet über PSNV Maßnahmen.","A;B"
+"Was versteht man unter aussergewöhnlichen Belastungen?","Müdigkeit","persönliche Hilflosigkeit","Einsätze mit Kindern","Einsätze mit Kameradinnen oder Kameraden bzw. persönlichem Bezug","Lustlosigkeit","B;C;D"
+"Wer stellt das Angebot PSNV-E zur Verfügung?","Die Kreisfeuerwehrverbände (KFV)","Der Landesfeuerwehrverband (LFV)","Die Kommune","Die Landesfeuerwehrschule (LFS)","A"
 "Welche Eigenschaften treffen auf Stahl zu?","gute Wärmeleitfähigkeit.","Verliert unter Wärmeeinwirkung an Stabilität.","hohe Tragfähigkeit.","Dehnt sich unter Wärmeeinwirkung aus.","Auch unter Wärmeeinwirkung eine hohe Festigkeit.","A;B;D"
 "Welche Eigenschaften treffen bei Beton zu?","plötzliches Bauteilversagen insbesondere bei Spannbeton.","Gute Feuerwiderstandsfähigkeit","hohe Druckfestigkeit","geringes Bauteilgewicht.","A;B;C"
 "Wie kann überschlägig die Abbrandrate von Holz beziffert werden?","0,5 - 1 cm pro Minute","0,5 - 1 m pro Minute","0,5 - 1 mm pro Minute","2 - 3 cm pro Minute","C"
