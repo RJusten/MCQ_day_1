@@ -10,6 +10,17 @@ type Question = {
 
 const PRELOADED_CSV = `Frage,OptionA,OptionB,OptionC,OptionD,Korrekt
 "Ein Täuschungsalarm ist ein ordnungsgemäßes Auslösen der Brandmeldeanlage ohne reales Feuer und damit einem notwendigen Eingreifen der Feuerwehr in Form von Lösch- oder Rettungsmaßnahmen.","Wahr","Falsch","","","A"
+"Welche Eigenschaften sollten Führungskräfte haben?","Glaubwürdigkeit","Entschlusskraft und Entschlussfreudigkeit","Risikobereitschaft","","A;B"
+"Sind Wärmeleitung, Feuerbrücken und Phänomene der schlagartigen Brandausbreitung Möglichkeiten der Brandausbreitung?","Wahr","Falsch","","","A"
+"Welche Quellen eignen sich für eine stoffliche Vorbereitung? (Auch wenn sie teilweise kritisch betrachtet werden müssen)","Merkblätter des Unfallversicherers","Beiträge aus dem Internet","Verpflegungsplan für die Teilnehmenden","","A;B"
+"Welche Löschwirkung hat Schaumschwer?","Verdrängen von Luftsauerstoff","Inhibition","Trennen","","C"
+"Welche Überlegungen stellen Sie bei Objekten mit Nagelplattenbindern an?","Im Brandfall darf nur von einem geringen Feuerwiderstand und Einsturzgefahr ausgegangen werden.","Die Schadensauswirkung kann von außen nur schwer beurteilt werden.","Diese Tragwerke sind statisch so berechnet, dass sie bei Versagen einer Verbindungsstelle stark einsturzgefährdet sind.","","A;B;C"
+"In welchen Fällen wird in der Regel nachgefordert?","Wenn ich mit einer Gruppe allein in den Einsatz gehe muss immer nachgefordert werden.","Wenn die Gesamtstärke der Mannschaft für die Einsatzsituation nicht ausreichend ist.","Wenn ich als Gruppenführer dauerhaft die Einsatzleitung übernehmen müsste und mehr als eine Gruppe im Einsatz ist.","","B;C"
+"Sie übergeben als Gruppenführer die Einsatzstelle/Einsatzleitung an Ihren Wehrführer. Was muss ein Übergabegespräch beinhalten?","Wiederholen aller Lagemeldungen an die Leitstelle","Erkundungsergebnisse aus der Lagefeststellung, sowie festgestellte Gefahren.","Bereits durchgeführte Maßnahmen.","","B;C"
+"Welche Aussagen in Hinblick auf die Fahrzeugausstattung ist richtig? (Gehen Sie von Fahrzeugbeladungen nach Norm aus!)","TSF haben keine Atemschutzgeräte in der Beladung.","Bei allen TSF, MLF, LF und HLF gehören 4 Atemschutzgeräte zur Standardbeladung.","Bei allen LF und HLF befinden sich mindestens 2 Atemschutzgeräte im Mannschaftsraum.","","B;C"
+"Was zählt zu den ortsfesten brandschutztechnischen Einrichtungen?","Notduschen","Feuerlöscher","Steigleitungen","","B;C"
+"Der kritische Wohnungsbrand unterstellt einen Brand im ersten Obergeschoss eines Gebäudes, in dem der Treppenraum als erster baulicher Rettungsweg verraucht ist und die Menschenrettung über Rettungsmittel der Feuerwehr als zweiten Rettungsweg erfolgen muss.","Wahr","Falsch","","","A"
+"Welche Informationen können aus der Buchstaben/Zahlen Kombination im oberen Teil der Gefahrgutwarntafel entnommen werden?","Haupt- und Nebengefahr","Menge des Gefahrgut","Hinweise auf Einsatzmaßnahmen (Maßnahmengruppen)","","A;C"
 "Ab welchem Zeitraum spricht man von einer Belastungsstörung / Traumafolgestörung?","Stunden","Tage","Monate/Jahre","","C"
 "In welche Bereiche (Kategorien) teilt sich das System PSNV auf?","PSNV-E (Einsatzkräfte)","PSNV-B (Betroffene)","Krisenintervention","Feuerwehrseelsorge","A;B"
 "Was können körperliche Reaktionen auf aussergewöhnliche Belastungen sein?","regelmäßig wiederkehrende Erinnerungen (Flashbacks)","Schlafprobleme","Blendempfindlichkeit","Müdigkeit, Erschöpfung","","A;B;D"
