@@ -24,7 +24,18 @@ const PRELOADED_CSV = `Frage,OptionA,OptionB,OptionC,OptionD,Korrekt
 "Wie lautet das Befehlsschema?","Einheit, Auftrag, Mittel, Ziel, Weg","Einheit, Auftrag, Mittel, Weg, Ziel","Wasserentnahmestelle, Lage des Verteilers","Einheit, Mittel, Auftrag, Weg, Ziel","A"
 "Wann ist eine Lagemeldung an die Leitstelle abzusetzen?","Bei kleineren Einsätzen (z.B. Türöffnung usw.) sind keine Lagemeldungen notwendig","Wenn der Einsatzleiter es für nötig hält","Bei jeder Lageänderung und ggfs. in zeitlich regelmäßigen Abständen","Nach jeder Lagebesprechung","C;D"
 "Was sind Aufgaben des Wassertrupps in der Brandbekämpfung?","Herstellen der Wasserversorgung zwischen dem Verteiler und den Strahlrohren","Bestimmt den Ort der Pumpe","Herstellung einer Wasserversorgung zwischen Wasserentnahme, Pumpe und Verteiler","Übernahme der Funktion Sicherheitstrupp","C;D"
-"Der Angriffstrupp setzt immer den Verteiler?","Wahr","Falsch","","","A"`;
+"Der Angriffstrupp setzt immer den Verteiler?","Wahr","Falsch","","","A"`
+"Wie lautet die GAMS Regel?","Gefahr erkennen, Absperrmaßnahmen, Menschenrettung, Spezialkräfte","Gefahrenmatrix, Absperrmaßnahmen, Menschenrettung, Sicherungsmaßnahmen","Gefahr erkennen, Ausbreitung verhindern, Menschenrettung, Spezialkräfte","","A"
+"Welcher Grundsatz gilt für die Absperrmaßnahmen, wenn der Gefahrstoff noch nicht erkannt ist?","5m Gefahrenbereich – 10 m Absperrbereich","50m Gefahrenbereich – 100m Absperrbereich","So lange der Stoff nicht bekannt ist, brauchen keine Festlegungen zur Absperrung getroffen werden.","100m Gefahrenbereich – 200m Absperrbereich","B"
+"Was beinhaltet die Schutzausrüstung der Körperschutzform (KSF) 1?","Persönliche Schutzausrüstung zur Brandbekämpfung mit Pressluftatmer und Kontaminationsschutzhaube.","Da die KSF 1 beim Gefahrgut-Ersteinsatz zur Menschenrettung dient, muss sie keinen besonderen Anforderungen entsprechen.","Die Kontaminationsschutzhaube kann hilfsweise durch die Feuerschutzhaube ersetzt werden.","Die KSF 1 besteht grundsätzlich aus einem Chemikalienschutzanzug (CSA).","A;C"
+"Welche Aufgabe hat der Angriffstrupp im Gefahrgut-Ersteinsatz?","Er sperrt die Einsatzstelle ab.","Er baut die Dekontaminationsstelle auf.","Er führt die Menschenrettung unter Körperschutzform (KSF) 1 durch.","Er betreut Betroffene.","C"
+"Welche Aufgabe hat der Wassertrupp im Gefahrgut-Ersteinsatz?","Er führt die Menschenrettung durch.","Er sperrt die Einsatzstelle ab und wird Sicherheitstrupp.","Er fängt austretendes Gefahrgut auf.","Er baut die Dekontaminationsstelle auf.","B"
+"Welche Aufgabe hat der Schlauchtrupp im Gefahrgut-Ersteinsatz?","Er wird Sicherheitstrupp.","Er sperrt die Einsatzstelle ab.","Er baut die Dekontaminationsstelle auf.","Er unterstützt den Angriffstrupp bei der Menschenrettung.","C"
+"Die obere Ziffer der Warntafel gibt Auskunft darüber, um welchen Stoff es sich handelt.","Wahr","Falsch","","","B"
+"Die untere Ziffer gibt Rückschlüsse auf die grundlegenden Stoffeigenschaften.","Wahr","Falsch","","","B"
+"Worin besteht der Unterschied zwischen Gefahrgut und Gefahrstoff?","Sie unterscheiden sich im Aggregatzustand.","Sie unterscheiden sich in der Art der Verpackung.","Sie unterscheiden sich in der Menge.","Gefahrgüter sind Gefahrstoffe, die auf Straße, Schiene, zu Wasser und in der Luft transportiert werden.","D"
+"Bei welcher Gefahrengruppe ist ein Einsatz ohne besondere Schutzausrüstung (KSF 1) möglich?","Gefahrengruppe 3","Gefahrengruppe 1","In keiner Gefahrengruppe darf auf Sonderausrüstung verzichtet werden.","Gefahrengruppe 2","B"
+;
 
 function parseCsvLine(line: string): string[] {
   const result: string[] = [];
