@@ -418,7 +418,7 @@ export default function SimpleMcqTestTool() {
         </section>
 
         <div className="footer-note">
-          Ausschließlich entwickelt für die Prüfungsvorbereitung Gruppenführer E-Learning März 2026 · <strong>Powered by Richie 🚒</strong>
+          Ausschließlich entwickelt für die Prüfungsvorbereitung Gruppenführer E-Learning März 2026 · <strong>Powered by Richie</strong>
         </div>
       </div>
     </div>
