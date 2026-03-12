@@ -10,6 +10,7 @@ type Question = {
 
 const PRELOADED_CSV = `Frage,OptionA,OptionB,OptionC,OptionD,Korrekt
 "Ein Täuschungsalarm ist ein ordnungsgemäßes Auslösen der Brandmeldeanlage ohne reales Feuer und damit einem notwendigen Eingreifen der Feuerwehr in Form von Lösch- oder Rettungsmaßnahmen.","Wahr","Falsch","","","A"
+"Welcher Winkel ist für die Zugrichtung ideal?","120°","180°","90°","45°","C"
 "Wie lautet das Hebelgesetz, wenn der Hebel im Gleichgewicht ist?","Last * Kraftarm = Kraft * Lastarm","Kraft = Last * Lastarm / Kraftarm","Kraft * Kraftarm = Last * Lastarm","Kraft * Kraftarm = 0","C"
 "Ab wann kann ein Gegenstand kippen, wenn eine Kraft auf ihn wirkt ?","Wenn die Kraft unterhalb des Schwerpunktes wirkt.","Wenn die Kraft oberhalb des Schwerpunktes wirkt.","","","B"
 "Wie wird eine feste Rolle auch genannt?","Klapprolle","Kraftrolle","Zugrolle","Umlenkrolle","D"
