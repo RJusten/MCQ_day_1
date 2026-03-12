@@ -49,7 +49,7 @@ const PRELOADED_CSV = `Frage,OptionA,OptionB,OptionC,OptionD,Korrekt
 "Der Objektschutz beinhaltet das Vorhalten von Brandschutzeinrichtungen, die den Grundschutz der Kommune übersteigen. Dazu zählen das Vorhalten von Steigleitungen, ortsfeste Löschanlagen oder Löschwasserbevorratung oder – vorhaltung auf dem Grundstück.","Wahr","Falsch","","","A"
 "Wer stellt in der Regel die Brandsicherheitswache?","Der Veranstalter stellt die Brandsicherheitswache.","Die genehmigende Behörde (Ordnungsbehörde) stellt die Brandsicherheitswache.","Sie wird von der öffentlich zuständigen Feuerwehr gestellt.","","C"
 "Welche Mindestqualifikation (abgeschlossene Ausbildung) ist für die Teilnehmer der Brandsicherheitswache gefordert?","Truppmannausbildung","Gruppenführerausbildung","Truppführerausbildung","","C"
-  ;
+`;
 
 function parseCsvLine(line: string): string[] {
   const result: string[] = [];
