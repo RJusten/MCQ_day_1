@@ -10,6 +10,14 @@ type Question = {
 
 const PRELOADED_CSV = `Frage,OptionA,OptionB,OptionC,OptionD,Korrekt
 "Ein Täuschungsalarm ist ein ordnungsgemäßes Auslösen der Brandmeldeanlage ohne reales Feuer und damit einem notwendigen Eingreifen der Feuerwehr in Form von Lösch- oder Rettungsmaßnahmen.","Wahr","Falsch","","","A"
+"Welche der folgenden Funktionen sind Führungsfunktionen im Einsatz nach der FwDV100?","Einsatzabschnittsleiter","Einheitsführer","Atemschutzüberwachung","","A;B"
+"Was ist unter dem Begriff Objektschutz zu verstehen?","Der Schutz von speziellen Objekten in Verantwortung des Gemeindewehrführers.","Die Versorgung von besonderen Objekten mit zusätzlichem Löschwasser und entsprechenden Löscheinrichtungen in Verantwortung des Betreibers.","Die Ausstattung von Objekten mit einer BMA.","","B"
+"Im §38 der StVO wird das Wegerecht geregelt. Ebenso ist dort hinterlegt, welche Auswirkungen von blauem Blinklicht in Zusammenhang mit dem Einsatzhorn ausgehen. Es ordnet anderen Verkehrsteilnehmenden an sofort freie Bahn zu schaffen.","Wahr","Falsch","","","A"
+"Was gehört zu den Gefahren der Einsatzstelle gemäß Gefahrenmatrix (AAAA C EEEE)?","Chemische Stoffe","Angstreaktion","Biologische Gefahren","","A;B"
+"Was trifft auf ein Tragkraftspritzenfahrzeug mit Wasser (TSF-W) zu?","Es hat eine Gruppenbesatzung (1/8).","Es hat eine Staffelbesatzung (1/5)","Es hat eine Zusatzbeladung für eine Staffel (1/5).","","B"
+"Welche der nachfolgenden Maßnahmen nutzen die Löschwirkung Ersticken?","Abkühlen einer Flüssigkeit unter den Flammpunkt.","Abkühlen eines brennbaren Stoffes unter die Zündtemperatur.","Abdecken eines brennbaren Stoffes mit Schaum.","","A;C"
+"Was zählt zu einem motivierenden Unterricht?","Die Lösung selbst finden lassen.","Die Voraussetzungen für eine Teilnahme nennen.","Unaufmerksame Teilnehmer nicht beachten","","A;B"
+"Welches Verhalten haben Natursteine unter Brandeinwirkung?","Entzündbar ab ca. 500 °C.","Völliger Zerfall ab ca. 1000°C bei Kalksteinen.","Teilweises, schlagartiges Zerplatzen.","","B;C"
 "Welche Eigenschaften sollten Führungskräfte haben?","Glaubwürdigkeit","Entschlusskraft und Entschlussfreudigkeit","Risikobereitschaft","","A;B"
 "Sind Wärmeleitung, Feuerbrücken und Phänomene der schlagartigen Brandausbreitung Möglichkeiten der Brandausbreitung?","Wahr","Falsch","","","A"
 "Welche Quellen eignen sich für eine stoffliche Vorbereitung? (Auch wenn sie teilweise kritisch betrachtet werden müssen)","Merkblätter des Unfallversicherers","Beiträge aus dem Internet","Verpflegungsplan für die Teilnehmenden","","A;B"
