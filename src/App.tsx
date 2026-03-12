@@ -10,6 +10,16 @@ type Question = {
 
 const PRELOADED_CSV = `Frage,OptionA,OptionB,OptionC,OptionD,Korrekt
 "Ein Täuschungsalarm ist ein ordnungsgemäßes Auslösen der Brandmeldeanlage ohne reales Feuer und damit einem notwendigen Eingreifen der Feuerwehr in Form von Lösch- oder Rettungsmaßnahmen.","Wahr","Falsch","","","A"
+"Welche Eigenschaften treffen auf Stahl zu?","gute Wärmeleitfähigkeit.","Verliert unter Wärmeeinwirkung an Stabilität.","hohe Tragfähigkeit.","Dehnt sich unter Wärmeeinwirkung aus.","Auch unter Wärmeeinwirkung eine hohe Festigkeit.","A;B;D"
+"Welche Eigenschaften treffen bei Beton zu?","plötzliches Bauteilversagen insbesondere bei Spannbeton.","Gute Feuerwiderstandsfähigkeit","hohe Druckfestigkeit","geringes Bauteilgewicht.","A;B;C"
+"Wie kann überschlägig die Abbrandrate von Holz beziffert werden?","0,5 - 1 cm pro Minute","0,5 - 1 m pro Minute","0,5 - 1 mm pro Minute","2 - 3 cm pro Minute","C"
+"Was ist eine G-Verglasung?","Das 'G' steht für den Werkstoff Glas.","Sie verhindert den Durchtritt von Feuer und Rauch.","Sie verhindert den Durchtritt von Feuer, Rauch und Wärmestrahlung.","","B"
+"Was ist eine F-Verglasung?","Zwischen zwei Glasscheiben befindet sich eine Verbundmasse, die bei Wärmebeaufschlagung aufschäumt.","Sie verhindert den Durchtritt von Feuer, Rauch und Wärmestrahlung.","Das 'F' in der Bezeichnung steht für 'Faserverbundstoff'","","A;B"
+"Ein Bauteil trägt die Bezeichnung F90-AB. Was bedeutet das?","Wahr","Falsch","","","A"
+"Die Einheitstemperaturzeitkurve (ETK) ist eine Temperaturverlaufskurve, die den Verlauf der Temperatur eines Normbrandes darstellt. Sie wird zur Klassifizierung der Feuerwiderstandsdauer von Bauteilen eingesetzt.","Wahr","Falsch","","","A"
+"Was ist die Bauweise?","Stellung der Gebäude in Bezug auf die Grundstücksgrenzen.","Es bezeichnet die verwendeten Baustoffe, sowie die Zusammenfügung der Baustoffe","","","A"
+"Welche Arten der Bauweise werden unterschieden?","offene Bauweise (Länge der Gebäudefronten bis max. 50 m)","massive Bauweise","geschlossene Bauweise (Länge der Gebäudefronten > 50m, geschlossene Straßenrandbebauung)","nicht massive Bauweise","A;C"
+"Welche Bauarten werden unterschieden?","offene Bauart","geschlossene Bauart","massive Bauart (selbsttragend)","nicht massiv (z.B. tragendes Fachwerk)","C;D"
 "Welcher Winkel ist für die Zugrichtung ideal?","120°","180°","90°","45°","C"
 "Wie lautet das Hebelgesetz, wenn der Hebel im Gleichgewicht ist?","Last * Kraftarm = Kraft * Lastarm","Kraft = Last * Lastarm / Kraftarm","Kraft * Kraftarm = Last * Lastarm","Kraft * Kraftarm = 0","C"
 "Ab wann kann ein Gegenstand kippen, wenn eine Kraft auf ihn wirkt ?","Wenn die Kraft unterhalb des Schwerpunktes wirkt.","Wenn die Kraft oberhalb des Schwerpunktes wirkt.","","","B"
