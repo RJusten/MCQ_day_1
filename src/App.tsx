@@ -10,6 +10,15 @@ type Question = {
 
 const PRELOADED_CSV = `Frage,OptionA,OptionB,OptionC,OptionD,Korrekt
 "Ein Täuschungsalarm ist ein ordnungsgemäßes Auslösen der Brandmeldeanlage ohne reales Feuer und damit einem notwendigen Eingreifen der Feuerwehr in Form von Lösch- oder Rettungsmaßnahmen.","Wahr","Falsch","","","A"
+"Was zählt zu den Aufgaben eines Gruppenführers auf der Anfahrt zur Einsatzstelle?","Informationsweitergabe an die Mannschaft (Lage)","Überprüfung der Funktionseinteilung der Mannschaft","Alarmierung des Kreiswehrführers","","A;B"
+"Wann sind Einsätze der Feuerwehr kostenfrei?","Im Rahmen der unmittelbaren Gefahrenabwehr (hoheitliche Aufgaben)","Nur wenn das Hilfeersuchen über den Notruf (Leitstelle) an die Feuerwehr gestellt wird.","Innerhalb des Amtsbereiches bei gemeindeübergreifender Hilfe.","","A;C"
+"Der Winkel zwischen Zugseil und zu ziehender Last sollte im Idealfall 90° betragen.","Wahr","Falsch","","","A"
+"Für welche der folgenden Ereignisse ist eine Einsatzplanung sinnvoll?","Türöffnungen","Gefahrguteinsätze","Einsätze bei Hochwasser","","B;C"
+"Welchen taktischen Einsatzwert besitzt ein Löschgruppenfahrzeug?","Technische Hilfeleistung größeren Umfangs","Durchführung einer Brandbekämpfung","Fördern von Löschwasser","","B;C"
+"Welche der folgenden Antworten sind Einsatzgrundsätze bei Maschinenunfällen?","Demontage (systematischer Auseinanderbau der Maschine)","Schützen (Erhalten von Sachwerten)","Schneiden (Einsatz von Säge, Trennschleifer oder Autogenschneidgerät zur Befreiung)","","A;C"
+"Was gehört zur stofflichen Vorbereitung einer Unterrichtseinheit?","Das Thema festlegen","Festlegen einer Ausbildungsmethode bzw. -form (z.B. Gruppenarbeit)","Die Kleiderordnung der Teilnehmenden festlegen","","A"
+"Ab welchem Zeitraum spricht man von einer Traumafolgestörung?","Stunden","Monate/Jahre","Tage/Wochen","","B"
+"Was kennzeichnet eine offene Bauweise?","Bebauung von Grundstücken mit freistehenden Gebäuden.","Gebäude mit Dachterrassen","Abstandsflächen zur seitlichen Grundstücksgrenze","","A;C"
 "Welche Aussagen zu Brandfluchthauben sind richtig?","Sie dienen zum Schutz vor Atemgiften im Brandrauch.","Es befinden sich 2 Stück in der Standardbeladung bei TSF-W, MLF, LF und HLF.","Für Brandfluchthauben gilt eine Alterbeschränkung.","","A;B"
 "Welche Aussagen zur Arbeit mit der losen Rolle sind richtig?","Die lose Rolle bewegt sich in Zugrichtung.","Der Festpunkt muss die doppelte Kraft aufnehmen.","Die aufzuwendende Zugkraft verdoppelt sich.","","A"
 "Sie wollen an einer Einsatzstelle die Einsatzleitung an eine übergeordnete Führungskraft übergeben. Was müssen Sie machen um den Wechsel der Einsatzleitung zu vollziehen?","Den Betroffenen mitteilen, dass die Einsatzleitung gewechselt hat.","Allen am Einsatz beteiligten Kräften den Wechsel der Einsatzleitung mitteilen.","Die gelbe Kennzeichnungsweste des Einsatzleiters übergeben.","","B;C"
