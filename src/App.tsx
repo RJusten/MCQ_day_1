@@ -436,7 +436,7 @@ export default function SimpleMcqTestTool() {
               onClick={resetWholeSession}
               disabled={sessionScore.answered === 0 && quizCount === 0}
             >
-              Ganze Sitzung zurücksetzen
+              Ganze Lernphase zurücksetzen
             </button>
           </div>
         </section>
@@ -458,7 +458,7 @@ export default function SimpleMcqTestTool() {
             </p>
           ) : quizCount === 0 ? (
             <p className="empty-state">
-              Bitte Thema auswählen, Anzahl festlegen und dann „Quiz starten“ klicken.
+              Thema auswählen, Anzahl festlegen und dann „Quiz starten“ klicken.
             </p>
           ) : quizFinished ? (
             <div>
@@ -519,7 +519,7 @@ export default function SimpleMcqTestTool() {
                     className="btn btn-secondary"
                     onClick={startNewQuizWithoutCorrectAnswers}
                   >
-                    Neue Fragen ohne bereits richtige starten
+                    Neue Fragen ohne bereits Richtige starten
                   </button>
                 )}
               </div>
