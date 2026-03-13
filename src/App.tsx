@@ -96,18 +96,31 @@ function shuffleArray<T>(array: T[]): T[] {
 
 export default function SimpleMcqTestTool() {
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
-  const totalDatabankCount = allQuestions.length;
+  const [isLoading, setIsLoading] = useState(true);
 
   const [quizSizeInput, setQuizSizeInput] = useState("10");
   const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState<number[]>([]);
   const [result, setResult] = useState<"correct" | "wrong" | null>(null);
-  const [score, setScore] = useState({ correct: 0, wrong: 0, answered: 0 });
+
+  // Für den aktuellen Durchlauf
+  const [quizScore, setQuizScore] = useState({
+    correct: 0,
+    wrong: 0,
+    answered: 0,
+  });
+
+  // Für die gesamte Lernsitzung über mehrere Durchläufe hinweg
+  const [sessionScore, setSessionScore] = useState({
+    correct: 0,
+    wrong: 0,
+    answered: 0,
+  });
+
   const [wrongQuestions, setWrongQuestions] = useState<Question[]>([]);
   const [isRetryMode, setIsRetryMode] = useState(false);
   const [excludedQuestionIds, setExcludedQuestionIds] = useState<number[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function loadQuestions() {
@@ -133,6 +146,7 @@ export default function SimpleMcqTestTool() {
     loadQuestions();
   }, []);
 
+  const totalDatabankCount = allQuestions.length;
   const currentQuestion = quizQuestions[currentIndex];
   const quizCount = quizQuestions.length;
   const quizFinished = quizCount > 0 && currentIndex >= quizCount;
@@ -146,7 +160,7 @@ export default function SimpleMcqTestTool() {
   );
 
   const progressPercent =
-    quizCount > 0 ? Math.min((score.answered / quizCount) * 100, 100) : 0;
+    quizCount > 0 ? Math.min((quizScore.answered / quizCount) * 100, 100) : 0;
 
   function startQuiz() {
     if (allQuestions.length === 0) return;
@@ -164,7 +178,11 @@ export default function SimpleMcqTestTool() {
     setCurrentIndex(0);
     setSelected([]);
     setResult(null);
-    setScore({ correct: 0, wrong: 0, answered: 0 });
+
+    // Neuer kompletter Lernstart
+    setQuizScore({ correct: 0, wrong: 0, answered: 0 });
+    setSessionScore({ correct: 0, wrong: 0, answered: 0 });
+
     setWrongQuestions([]);
     setIsRetryMode(false);
     setExcludedQuestionIds([]);
@@ -178,7 +196,10 @@ export default function SimpleMcqTestTool() {
     setCurrentIndex(0);
     setSelected([]);
     setResult(null);
-    setScore({ correct: 0, wrong: 0, answered: 0 });
+
+    // Nur aktuellen Durchlauf zurücksetzen
+    setQuizScore({ correct: 0, wrong: 0, answered: 0 });
+
     setWrongQuestions([]);
     setIsRetryMode(true);
     setQuizSizeInput(String(wrongQuestions.length));
@@ -204,7 +225,10 @@ export default function SimpleMcqTestTool() {
     setCurrentIndex(0);
     setSelected([]);
     setResult(null);
-    setScore({ correct: 0, wrong: 0, answered: 0 });
+
+    // Nur aktuellen Durchlauf zurücksetzen
+    setQuizScore({ correct: 0, wrong: 0, answered: 0 });
+
     setWrongQuestions([]);
     setIsRetryMode(false);
     setQuizSizeInput(String(clampedCount));
@@ -228,7 +252,14 @@ export default function SimpleMcqTestTool() {
     const isCorrect = correctSorted === selectedSorted;
 
     setResult(isCorrect ? "correct" : "wrong");
-    setScore((prev) => ({
+
+    setQuizScore((prev) => ({
+      correct: prev.correct + (isCorrect ? 1 : 0),
+      wrong: prev.wrong + (isCorrect ? 0 : 1),
+      answered: prev.answered + 1,
+    }));
+
+    setSessionScore((prev) => ({
       correct: prev.correct + (isCorrect ? 1 : 0),
       wrong: prev.wrong + (isCorrect ? 0 : 1),
       answered: prev.answered + 1,
@@ -256,12 +287,17 @@ export default function SimpleMcqTestTool() {
   }
 
   function resetCurrentQuiz() {
-    if (quizCount === 0) return;
+    if (quizCount === 0 && sessionScore.answered === 0) return;
 
+    setQuizQuestions([]);
     setCurrentIndex(0);
     setSelected([]);
     setResult(null);
-    setScore({ correct: 0, wrong: 0, answered: 0 });
+
+    // Kompletten Lernstand zurücksetzen
+    setQuizScore({ correct: 0, wrong: 0, answered: 0 });
+    setSessionScore({ correct: 0, wrong: 0, answered: 0 });
+
     setWrongQuestions([]);
     setIsRetryMode(false);
     setExcludedQuestionIds([]);
@@ -290,15 +326,15 @@ export default function SimpleMcqTestTool() {
             </div>
             <div className="stat-card">
               <div className="stat-label">Beantwortet</div>
-              <div className="stat-value">{score.answered}</div>
+              <div className="stat-value">{sessionScore.answered}</div>
             </div>
             <div className="stat-card">
               <div className="stat-label">Richtig</div>
-              <div className="stat-value">{score.correct}</div>
+              <div className="stat-value">{sessionScore.correct}</div>
             </div>
             <div className="stat-card">
               <div className="stat-label">Falsch</div>
-              <div className="stat-value">{score.wrong}</div>
+              <div className="stat-value">{sessionScore.wrong}</div>
             </div>
           </div>
         </section>
@@ -332,7 +368,7 @@ export default function SimpleMcqTestTool() {
             <button
               className="btn btn-neutral"
               onClick={resetCurrentQuiz}
-              disabled={quizCount === 0}
+              disabled={quizCount === 0 && sessionScore.answered === 0}
             >
               Quiz zurücksetzen
             </button>
@@ -349,7 +385,8 @@ export default function SimpleMcqTestTool() {
             </p>
           ) : quizCount === 0 ? (
             <p className="empty-state">
-              Bitte zuerst die gewünschte Anzahl an Fragen eingeben und „Quiz starten“ klicken.
+              Bitte zuerst die gewünschte Anzahl an Fragen eingeben und „Quiz
+              starten“ klicken.
             </p>
           ) : quizFinished ? (
             <div>
@@ -374,23 +411,32 @@ export default function SimpleMcqTestTool() {
               </h3>
 
               <p className="empty-state">
-                Ergebnis: {score.correct} richtig, {score.wrong} falsch
+                Ergebnis dieses Durchlaufs: {quizScore.correct} richtig,{" "}
+                {quizScore.wrong} falsch
+              </p>
+
+              <p className="empty-state">
+                Gesamte Lernsitzung: {sessionScore.correct} richtig,{" "}
+                {sessionScore.wrong} falsch bei {sessionScore.answered} beantworteten
+                Fragen
               </p>
 
               {wrongQuestions.length > 0 && (
                 <p className="empty-state">
-                  Du kannst jetzt nur die falsch beantworteten Fragen erneut üben.
+                  Du kannst jetzt nur die falsch beantworteten Fragen erneut
+                  üben.
                 </p>
               )}
 
               {remainingNewQuestionsCount > 0 ? (
                 <p className="empty-state">
-                  Alternativ kannst du ein neues zufälliges Set starten, wobei bereits richtig
-                  beantwortete Fragen ausgeblendet werden.
+                  Alternativ kannst du ein neues zufälliges Set starten, wobei
+                  bereits richtig beantwortete Fragen ausgeblendet werden.
                 </p>
               ) : (
                 <p className="empty-state">
-                  Es sind keine weiteren neuen Fragen mehr übrig. Du hast alle bisher richtig beantwortet.
+                  Es sind keine weiteren neuen Fragen mehr übrig. Du hast alle
+                  bisher richtig beantwortet.
                 </p>
               )}
 
@@ -485,7 +531,8 @@ export default function SimpleMcqTestTool() {
                     <>
                       <strong>Falsch.</strong>
                       <div style={{ marginTop: 8 }}>
-                        Richtige Antwort(en): {formatCorrectAnswers(currentQuestion)}
+                        Richtige Antwort(en):{" "}
+                        {formatCorrectAnswers(currentQuestion)}
                       </div>
                     </>
                   )}
