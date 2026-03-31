@@ -6,8 +6,8 @@
   --brand-slate: #475569;
   --brand-text-soft: #64748b;
   --brand-border: rgba(148, 163, 184, 0.24);
-  --brand-surface: rgba(255, 255, 255, 0.84);
-  --brand-surface-strong: rgba(255, 255, 255, 0.9);
+  --brand-surface: rgba(255, 255, 255, 0.8);
+  --brand-surface-strong: rgba(255, 255, 255, 0.88);
   --brand-shadow: 0 16px 40px rgba(15, 23, 42, 0.14);
 }
 
@@ -22,8 +22,8 @@ body {
   background-image:
     linear-gradient(
       to bottom,
-      rgba(255, 255, 255, 0.34),
-      rgba(255, 255, 255, 0.52)
+      rgba(255, 255, 255, 0.22),
+      rgba(255, 255, 255, 0.38)
     ),
     url("./firefighter-in-action-stockcake.webp");
   background-size: cover;
@@ -37,10 +37,10 @@ body::before {
   inset: 0;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.06) 0%,
-    rgba(255, 255, 255, 0.14) 100%
+    rgba(255, 255, 255, 0.04) 0%,
+    rgba(255, 255, 255, 0.1) 100%
   );
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(0.8px);
   z-index: -1;
 }
 
@@ -65,10 +65,10 @@ select {
   overflow: hidden;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.84) 100%
+    rgba(255, 255, 255, 0.86) 0%,
+    rgba(255, 255, 255, 0.8) 100%
   );
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.42);
   border-radius: 30px;
   padding: 28px 30px 30px;
   box-shadow: var(--brand-shadow);
@@ -90,7 +90,7 @@ select {
 .brand-logo-inline {
   display: block;
   width: 100%;
-  max-width: 380px;
+  max-width: 360px;
   height: auto;
   object-fit: contain;
   margin-bottom: 16px;
@@ -125,11 +125,11 @@ select {
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.74);
+  background: rgba(255, 255, 255, 0.68);
   border: 1px solid var(--brand-border);
   border-radius: 18px;
   padding: 14px 16px;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(3px);
 }
 
 .stat-label {
@@ -146,12 +146,12 @@ select {
 
 .panel-card {
   background: var(--brand-surface);
-  border: 1px solid rgba(255, 255, 255, 0.46);
+  border: 1px solid rgba(255, 255, 255, 0.42);
   border-radius: 28px;
   padding: 20px;
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.1);
   margin-bottom: 20px;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(6px);
 }
 
 .controls-row {
@@ -183,7 +183,7 @@ select {
   padding: 12px 14px;
   border: 1px solid #cbd5e1;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.9);
   color: #111827;
   font-size: 1.05rem;
   font-weight: 500;
@@ -207,7 +207,7 @@ select.number-input {
   color: #111827;
   border-radius: 14px;
   border: 1px solid #cbd5e1;
-  background-color: rgba(255, 255, 255, 0.94);
+  background-color: rgba(255, 255, 255, 0.9);
   background-image:
     linear-gradient(45deg, transparent 50%, #6b7280 50%),
     linear-gradient(135deg, #6b7280 50%, transparent 50%),
@@ -322,7 +322,7 @@ select.number-input:focus {
   border: 1px solid rgba(148, 163, 184, 0.4);
   border-radius: 16px;
   padding: 12px 14px;
-  background: rgba(255, 255, 255, 0.84);
+  background: rgba(255, 255, 255, 0.8);
   transition:
     border-color 0.2s ease,
     background 0.2s ease,
@@ -331,7 +331,7 @@ select.number-input:focus {
 
 .answer-option:hover {
   border-color: rgba(185, 28, 28, 0.35);
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
 }
 
