@@ -366,21 +366,17 @@ export default function SimpleMcqTestTool() {
       <div className="app-container">
         <section className="hero-card">
           <div className="hero-header">
-            <div className="brand-block">
-              <div className="brand-logo-wrap">
-                <img
-                  src="/cropped-Quer-mit-Farbschnitt-ohne-Hintergrund.png"
-                  alt="Kreisfeuerwehrverband Stormarn"
-                  className="brand-logo"
-                />
-              </div>
+            <img
+              src="/cropped-Quer-mit-Farbschnitt-ohne-Hintergrund.png"
+              alt="Kreisfeuerwehrverband Stormarn"
+              className="brand-logo-inline"
+            />
 
-              <div className="brand-text">
-                <h1 className="hero-title">
-                  Vorbereitungslehrgang Gruppenführungsausbildung
-                </h1>
-                <p className="hero-subtitle">Ein Angebot des KFV Stormarn</p>
-              </div>
+            <div className="brand-text">
+              <h1 className="hero-title">
+                Vorbereitungslehrgang Gruppenführungsausbildung
+              </h1>
+              <p className="hero-subtitle">Ein Angebot des KFV Stormarn</p>
             </div>
           </div>
 
