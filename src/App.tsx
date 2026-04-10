@@ -1,18 +1,17 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles.css";
 
+type AnswerOption = {
+  text: string;
+  isCorrect: boolean;
+  explanation: string;
+};
+
 type Question = {
   id: number;
   topic: string;
   question: string;
-  options: string[];
-  correct: number[];
-};
-
-type Score = {
-  correct: number;
-  wrong: number;
-  answered: number;
+  answers: AnswerOption[];
 };
 
 const ALL_TOPICS = "__ALLE_THEMEN__";
@@ -51,67 +50,89 @@ function parseQuestionsFromCsv(csv: string): Question[] {
     .map((l) => l.trim())
     .filter(Boolean);
 
-  if (lines.length < 2) {
-    return [];
-  }
+  if (lines.length < 2) return [];
 
   const headers = parseCsvLine(lines[0]).map((h) => h.trim().toLowerCase());
 
   const topicIndex = headers.indexOf("thema");
   const questionIndex = headers.indexOf("frage");
-  const correctIndex = headers.lastIndexOf("korrekt");
 
-  if (questionIndex === -1 || correctIndex === -1) {
+  const aIndex = headers.indexOf("antwort_a");
+  const aExplIndex = headers.indexOf("erklaerung_a");
+  const bIndex = headers.indexOf("antwort_b");
+  const bExplIndex = headers.indexOf("erklaerung_b");
+  const cIndex = headers.indexOf("antwort_c");
+  const cExplIndex = headers.indexOf("erklaerung_c");
+  const dIndex = headers.indexOf("antwort_d");
+  const dExplIndex = headers.indexOf("erklaerung_d");
+
+  const correctIndex = headers.indexOf("korrekt");
+
+  if (
+    questionIndex === -1 ||
+    correctIndex === -1 ||
+    aIndex === -1 ||
+    aExplIndex === -1 ||
+    bIndex === -1 ||
+    bExplIndex === -1
+  ) {
     return [];
   }
-
-  const optionStart = questionIndex + 1;
-  const optionEnd = correctIndex;
 
   const letterMap: Record<string, number> = {
     A: 0,
     B: 1,
     C: 2,
     D: 3,
-    E: 4,
-    F: 5,
   };
 
-  const questions: Question[] = [];
-
-  lines.slice(1).forEach((line, idx) => {
+  return lines.slice(1).flatMap((line, idx) => {
     const cols = parseCsvLine(line);
 
     const topic =
       topicIndex !== -1 && cols[topicIndex] ? cols[topicIndex].trim() : "Allgemein";
-
     const question = cols[questionIndex]?.trim() || "";
-    const rawOptions = cols.slice(optionStart, optionEnd);
-    const options = rawOptions.filter((o) => o && o.trim().length > 0);
+    const correctLetter = (cols[correctIndex] || "").trim().toUpperCase();
+    const correctIndexNumber = letterMap[correctLetter];
 
-    const correctRaw = (cols[correctIndex] || "")
-      .split(";")
-      .map((x) => x.trim().toUpperCase())
-      .filter(Boolean);
+    const rawAnswers = [
+      {
+        text: cols[aIndex]?.trim() || "",
+        explanation: cols[aExplIndex]?.trim() || "",
+      },
+      {
+        text: cols[bIndex]?.trim() || "",
+        explanation: cols[bExplIndex]?.trim() || "",
+      },
+      {
+        text: cIndex !== -1 ? cols[cIndex]?.trim() || "" : "",
+        explanation: cExplIndex !== -1 ? cols[cExplIndex]?.trim() || "" : "",
+      },
+      {
+        text: dIndex !== -1 ? cols[dIndex]?.trim() || "" : "",
+        explanation: dExplIndex !== -1 ? cols[dExplIndex]?.trim() || "" : "",
+      },
+    ].filter((answer) => answer.text.length > 0);
 
-    const correct = correctRaw
-      .map((letter) => letterMap[letter])
-      .filter((value) => value !== undefined && value < options.length);
-
-    if (!question || options.length === 0 || correct.length === 0) {
-      return;
+    if (!question || rawAnswers.length < 2 || correctIndexNumber === undefined) {
+      return [];
     }
 
-    questions.push({
-      id: idx + 1,
-      topic,
-      question,
-      options,
-      correct,
-    });
-  });
+    const answers: AnswerOption[] = rawAnswers.map((answer, answerIndex) => ({
+      text: answer.text,
+      explanation: answer.explanation,
+      isCorrect: answerIndex === correctIndexNumber,
+    }));
 
-  return questions;
+    return [
+      {
+        id: idx + 1,
+        topic,
+        question,
+        answers,
+      },
+    ];
+  });
 }
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -123,40 +144,23 @@ function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-function formatCorrectAnswers(question: Question) {
-  return question.correct
-    .map((index) => `${String.fromCharCode(65 + index)}. ${question.options[index]}`)
-    .join(" | ");
-}
-
 export default function SimpleMcqTestTool() {
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
 
   const [selectedTopic, setSelectedTopic] = useState<string>(ALL_TOPICS);
-  const [quizSizeInput, setQuizSizeInput] = useState("10");
-
   const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selected, setSelected] = useState<number[]>([]);
-  const [result, setResult] = useState<"correct" | "wrong" | null>(null);
 
-  const [currentRunScore, setCurrentRunScore] = useState<Score>({
+  const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  const [score, setScore] = useState({
     correct: 0,
     wrong: 0,
     answered: 0,
   });
-
-  const [sessionScore, setSessionScore] = useState<Score>({
-    correct: 0,
-    wrong: 0,
-    answered: 0,
-  });
-
-  const [wrongQuestions, setWrongQuestions] = useState<Question[]>([]);
-  const [isRetryMode, setIsRetryMode] = useState(false);
-  const [excludedQuestionIds, setExcludedQuestionIds] = useState<number[]>([]);
 
   useEffect(() => {
     async function loadQuestions() {
@@ -193,172 +197,65 @@ export default function SimpleMcqTestTool() {
 
   const topics = useMemo(() => {
     const uniqueTopics = Array.from(new Set(allQuestions.map((q) => q.topic)));
-    return uniqueTopics
-      .filter((topic): topic is string => Boolean(topic))
-      .sort((a, b) => a.localeCompare(b, "de"));
+    return uniqueTopics.sort((a, b) => a.localeCompare(b, "de"));
   }, [allQuestions]);
 
   const filteredQuestions = useMemo(() => {
-    if (selectedTopic === ALL_TOPICS) {
-      return allQuestions;
-    }
+    if (selectedTopic === ALL_TOPICS) return allQuestions;
     return allQuestions.filter((q) => q.topic === selectedTopic);
   }, [allQuestions, selectedTopic]);
 
-  const totalDatabankCount = filteredQuestions.length;
-
-  useEffect(() => {
-    if (isLoading) return;
-
-    if (totalDatabankCount > 0) {
-      setQuizSizeInput(String(totalDatabankCount));
-    } else {
-      setQuizSizeInput("0");
-    }
-  }, [selectedTopic, totalDatabankCount, isLoading]);
-
   const currentQuestion = quizQuestions[currentIndex];
-  const quizCount = quizQuestions.length;
-  const quizFinished = quizCount > 0 && currentIndex >= quizCount;
-
-  const remainingNewQuestionsCount = filteredQuestions.filter(
-    (question) => !excludedQuestionIds.includes(question.id)
-  ).length;
-
+  const quizFinished = quizQuestions.length > 0 && currentIndex >= quizQuestions.length;
   const progressPercent =
-    quizCount > 0 ? Math.min((currentRunScore.answered / quizCount) * 100, 100) : 0;
-
-  function resetQuestionView() {
-    setQuizQuestions([]);
-    setCurrentIndex(0);
-    setSelected([]);
-    setResult(null);
-    setCurrentRunScore({ correct: 0, wrong: 0, answered: 0 });
-    setWrongQuestions([]);
-    setIsRetryMode(false);
-    setExcludedQuestionIds([]);
-  }
+    quizQuestions.length > 0 ? (currentIndex / quizQuestions.length) * 100 : 0;
 
   function startQuiz() {
-    if (filteredQuestions.length === 0) return;
+    const questions =
+      selectedTopic === ALL_TOPICS ? allQuestions : filteredQuestions;
 
-    const requested = Number.parseInt(quizSizeInput, 10);
-    const safeRequested = Number.isNaN(requested) ? 10 : requested;
-    const clampedCount = Math.max(1, Math.min(safeRequested, filteredQuestions.length));
+    if (questions.length === 0) return;
 
-    const randomSet = shuffleArray(filteredQuestions).slice(0, clampedCount);
-
-    setQuizQuestions(randomSet);
+    setQuizQuestions(shuffleArray(questions));
     setCurrentIndex(0);
-    setSelected([]);
-    setResult(null);
-    setCurrentRunScore({ correct: 0, wrong: 0, answered: 0 });
-    setWrongQuestions([]);
-    setIsRetryMode(false);
-    setExcludedQuestionIds([]);
-    setQuizSizeInput(String(clampedCount));
+    setSelectedAnswerIndex(null);
+    setShowFeedback(false);
+    setScore({ correct: 0, wrong: 0, answered: 0 });
   }
 
-  function retryWrongQuestions() {
-    if (wrongQuestions.length === 0) return;
-
-    setQuizQuestions(wrongQuestions);
+  function resetQuiz() {
+    setQuizQuestions([]);
     setCurrentIndex(0);
-    setSelected([]);
-    setResult(null);
-    setCurrentRunScore({ correct: 0, wrong: 0, answered: 0 });
-    setWrongQuestions([]);
-    setIsRetryMode(true);
-    setQuizSizeInput(String(wrongQuestions.length));
+    setSelectedAnswerIndex(null);
+    setShowFeedback(false);
+    setScore({ correct: 0, wrong: 0, answered: 0 });
   }
 
-  function startNewQuizWithoutCorrectAnswers() {
-    const remainingPool = filteredQuestions.filter(
-      (question) => !excludedQuestionIds.includes(question.id)
-    );
+  function handleAnswerClick(answerIndex: number) {
+    if (!currentQuestion || showFeedback) return;
 
-    if (remainingPool.length === 0) return;
+    const selectedAnswer = currentQuestion.answers[answerIndex];
+    const isCorrect = selectedAnswer.isCorrect;
 
-    const requested = Number.parseInt(quizSizeInput, 10);
-    const safeRequested = Number.isNaN(requested) ? 10 : requested;
-    const clampedCount = Math.max(1, Math.min(safeRequested, remainingPool.length));
-
-    const randomSet = shuffleArray(remainingPool).slice(0, clampedCount);
-
-    setQuizQuestions(randomSet);
-    setCurrentIndex(0);
-    setSelected([]);
-    setResult(null);
-    setCurrentRunScore({ correct: 0, wrong: 0, answered: 0 });
-    setWrongQuestions([]);
-    setIsRetryMode(false);
-    setQuizSizeInput(String(clampedCount));
-  }
-
-  function toggleAnswer(index: number) {
-    if (result || quizFinished) return;
-
-    if (selected.includes(index)) {
-      setSelected(selected.filter((i) => i !== index));
-    } else {
-      setSelected([...selected, index]);
-    }
-  }
-
-  function checkAnswer() {
-    if (!currentQuestion || result || selected.length === 0) return;
-
-    const correctSorted = [...currentQuestion.correct].sort().join(",");
-    const selectedSorted = [...selected].sort().join(",");
-    const isCorrect = correctSorted === selectedSorted;
-
-    setResult(isCorrect ? "correct" : "wrong");
-
-    setCurrentRunScore((prev) => ({
+    setSelectedAnswerIndex(answerIndex);
+    setShowFeedback(true);
+    setScore((prev) => ({
       correct: prev.correct + (isCorrect ? 1 : 0),
       wrong: prev.wrong + (isCorrect ? 0 : 1),
       answered: prev.answered + 1,
     }));
-
-    setSessionScore((prev) => ({
-      correct: prev.correct + (isCorrect ? 1 : 0),
-      wrong: prev.wrong + (isCorrect ? 0 : 1),
-      answered: prev.answered + 1,
-    }));
-
-    if (isCorrect) {
-      setExcludedQuestionIds((prev) =>
-        prev.includes(currentQuestion.id) ? prev : [...prev, currentQuestion.id]
-      );
-    } else {
-      setWrongQuestions((prev) => {
-        const alreadyIncluded = prev.some((q) => q.id === currentQuestion.id);
-        return alreadyIncluded ? prev : [...prev, currentQuestion];
-      });
-    }
   }
 
   function nextQuestion() {
-    if (quizCount === 0) return;
+    if (!showFeedback) return;
 
-    const next = currentIndex + 1;
-    setCurrentIndex(next);
-    setSelected([]);
-    setResult(null);
+    setCurrentIndex((prev) => prev + 1);
+    setSelectedAnswerIndex(null);
+    setShowFeedback(false);
   }
 
-  function resetCurrentQuiz() {
-    resetQuestionView();
-  }
-
-  function resetWholeSession() {
-    resetQuestionView();
-    setSessionScore({ correct: 0, wrong: 0, answered: 0 });
-  }
-
-  function handleTopicChange(newTopic: string) {
-    setSelectedTopic(newTopic);
-    resetQuestionView();
+  function getCorrectAnswerIndex(question: Question) {
+    return question.answers.findIndex((answer) => answer.isCorrect);
   }
 
   return (
@@ -371,7 +268,6 @@ export default function SimpleMcqTestTool() {
               alt="Kreisfeuerwehrverband Stormarn"
               className="brand-logo-inline"
             />
-
             <div className="brand-text">
               <h1 className="hero-title">
                 Vorbereitungslehrgang Gruppenführungsausbildung
@@ -382,20 +278,20 @@ export default function SimpleMcqTestTool() {
 
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-label">Fragen in der Datenbank</div>
-              <div className="stat-value">{totalDatabankCount}</div>
+              <div className="stat-label">Fragen</div>
+              <div className="stat-value">{filteredQuestions.length}</div>
             </div>
             <div className="stat-card">
               <div className="stat-label">Beantwortet</div>
-              <div className="stat-value">{sessionScore.answered}</div>
+              <div className="stat-value">{score.answered}</div>
             </div>
             <div className="stat-card">
               <div className="stat-label">Richtig</div>
-              <div className="stat-value">{sessionScore.correct}</div>
+              <div className="stat-value">{score.correct}</div>
             </div>
             <div className="stat-card">
               <div className="stat-label">Falsch</div>
-              <div className="stat-value">{sessionScore.wrong}</div>
+              <div className="stat-value">{score.wrong}</div>
             </div>
           </div>
         </section>
@@ -410,7 +306,7 @@ export default function SimpleMcqTestTool() {
                 id="topic-select"
                 className="number-input"
                 value={selectedTopic}
-                onChange={(e) => handleTopicChange(e.target.value)}
+                onChange={(e) => setSelectedTopic(e.target.value)}
                 disabled={isLoading}
               >
                 <option value={ALL_TOPICS}>Alle Themen</option>
@@ -422,44 +318,20 @@ export default function SimpleMcqTestTool() {
               </select>
             </div>
 
-            <div className="input-group">
-              <label htmlFor="quiz-size" className="input-label">
-                Anzahl der Fragen
-              </label>
-              <input
-                id="quiz-size"
-                className="number-input"
-                type="number"
-                min={1}
-                max={Math.max(totalDatabankCount, 1)}
-                value={quizSizeInput}
-                onChange={(e) => setQuizSizeInput(e.target.value)}
-                disabled={isLoading || totalDatabankCount === 0}
-              />
-            </div>
-
             <button
               className="btn btn-primary"
               onClick={startQuiz}
-              disabled={isLoading || totalDatabankCount === 0}
+              disabled={isLoading || filteredQuestions.length === 0}
             >
               Quiz starten
             </button>
 
             <button
-              className="btn btn-neutral"
-              onClick={resetCurrentQuiz}
-              disabled={quizCount === 0}
-            >
-              Quiz zurücksetzen
-            </button>
-
-            <button
               className="btn btn-secondary"
-              onClick={resetWholeSession}
-              disabled={sessionScore.answered === 0 && quizCount === 0}
+              onClick={resetQuiz}
+              disabled={quizQuestions.length === 0}
             >
-              Alles zurücksetzen
+              Zurücksetzen
             </button>
           </div>
         </section>
@@ -469,94 +341,33 @@ export default function SimpleMcqTestTool() {
             <p className="empty-state">Fragen werden geladen ...</p>
           ) : loadError ? (
             <p className="empty-state">
-              Es konnten keine Fragen geladen werden. Bitte prüfe die Datei{" "}
-              <strong>questions.csv</strong> im public-Ordner.
+              Fehler beim Laden von <strong>questions.csv</strong>.
               <br />
               <br />
-              Fehler: {loadError}
+              {loadError}
             </p>
-          ) : totalDatabankCount === 0 ? (
-            <p className="empty-state">
-              Für das gewählte Thema wurden keine Fragen gefunden.
-            </p>
-          ) : quizCount === 0 ? (
-            <p className="empty-state">
-              Thema auswählen, Anzahl festlegen und dann „Quiz starten“ klicken.
-            </p>
+          ) : filteredQuestions.length === 0 ? (
+            <p className="empty-state">Keine Fragen für dieses Thema gefunden.</p>
+          ) : quizQuestions.length === 0 ? (
+            <p className="empty-state">Klicke auf „Quiz starten“.</p>
           ) : quizFinished ? (
             <div>
-              <div className="progress-wrap">
-                <div className="progress-top">
-                  <span>
-                    {isRetryMode ? "Wiederholung abgeschlossen" : "Quiz abgeschlossen"}
-                  </span>
-                  <span>
-                    {quizCount} / {quizCount}
-                  </span>
-                </div>
-                <div className="progress-bar">
-                  <div className="progress-bar-fill" style={{ width: "100%" }} />
-                </div>
-              </div>
-
-              <h3 className="question-title">
-                {isRetryMode ? "Wiederholung beendet." : "Stark gemacht."}
-              </h3>
-
+              <h3 className="question-title">Quiz abgeschlossen</h3>
               <p className="empty-state">
-                Ergebnis dieses Durchgangs: {currentRunScore.correct} richtig,{" "}
-                {currentRunScore.wrong} falsch
+                Ergebnis: {score.correct} richtig, {score.wrong} falsch
               </p>
-
-              <p className="empty-state">
-                Sitzung gesamt: {sessionScore.correct} richtig, {sessionScore.wrong} falsch
-              </p>
-
-              {wrongQuestions.length > 0 && (
-                <p className="empty-state">
-                  Du kannst jetzt nur die falsch beantworteten Fragen erneut üben.
-                </p>
-              )}
-
-              {remainingNewQuestionsCount > 0 ? (
-                <p className="empty-state">
-                  Alternativ kannst du ein neues zufälliges Set starten, wobei bereits
-                  richtig beantwortete Fragen im aktuell gewählten Thema ausgeblendet
-                  werden.
-                </p>
-              ) : (
-                <p className="empty-state">
-                  Es sind keine weiteren neuen Fragen mehr übrig.
-                </p>
-              )}
-
               <div className="actions-row">
-                {wrongQuestions.length > 0 && (
-                  <button className="btn btn-primary" onClick={retryWrongQuestions}>
-                    Nur falsche Fragen wiederholen
-                  </button>
-                )}
-
-                {remainingNewQuestionsCount > 0 && (
-                  <button
-                    className="btn btn-secondary"
-                    onClick={startNewQuizWithoutCorrectAnswers}
-                  >
-                    Neue Fragen ohne bereits Richtige starten
-                  </button>
-                )}
+                <button className="btn btn-primary" onClick={startQuiz}>
+                  Nochmal starten
+                </button>
               </div>
             </div>
-          ) : !currentQuestion ? (
-            <p className="empty-state">Es sind keine Fragen geladen.</p>
-          ) : (
+          ) : currentQuestion ? (
             <div>
               <div className="progress-wrap">
                 <div className="progress-top">
                   <span>
-                    {isRetryMode
-                      ? `Wiederholung: Frage ${currentIndex + 1} von ${quizCount}`
-                      : `Frage ${currentIndex + 1} von ${quizCount}`}
+                    Frage {currentIndex + 1} von {quizQuestions.length}
                   </span>
                   <span>{Math.round(progressPercent)}%</span>
                 </div>
@@ -575,64 +386,71 @@ export default function SimpleMcqTestTool() {
               <h3 className="question-title">{currentQuestion.question}</h3>
 
               <div className="answers-list">
-                {currentQuestion.options.map((option, i) => (
-                  <div key={i} className="answer-option">
-                    <label className="answer-label">
-                      <input
-                        type="checkbox"
-                        checked={selected.includes(i)}
-                        onChange={() => toggleAnswer(i)}
-                        disabled={!!result}
-                      />
-                      <span>
+                {currentQuestion.answers.map((answer, index) => {
+                  const isSelected = selectedAnswerIndex === index;
+                  const isCorrect = answer.isCorrect;
+                  const correctAnswerIndex = getCorrectAnswerIndex(currentQuestion);
+
+                  let extraClass = "";
+                  if (showFeedback) {
+                    if (index === correctAnswerIndex) extraClass = "answer-correct";
+                    if (isSelected && !isCorrect) extraClass = "answer-wrong";
+                  }
+
+                  return (
+                    <button
+                      key={index}
+                      className={`answer-option answer-button ${extraClass}`}
+                      onClick={() => handleAnswerClick(index)}
+                      disabled={showFeedback}
+                      type="button"
+                    >
+                      <div>
                         <span className="answer-letter">
-                          {String.fromCharCode(65 + i)}.
+                          {String.fromCharCode(65 + index)}.
                         </span>{" "}
-                        {option}
-                      </span>
-                    </label>
-                  </div>
-                ))}
+                        {answer.text}
+                      </div>
+
+                      {showFeedback && isSelected && (
+                        <div className="answer-explanation">
+                          {answer.explanation}
+                        </div>
+                      )}
+
+                      {showFeedback && index === correctAnswerIndex && !isSelected && (
+                        <div className="answer-explanation">
+                          Richtige Antwort.
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
 
-              <div className="actions-row">
-                <button
-                  className="btn btn-primary"
-                  onClick={checkAnswer}
-                  disabled={selected.length === 0 || !!result}
-                >
-                  Antwort prüfen
-                </button>
-
-                <button
-                  className="btn btn-secondary"
-                  onClick={nextQuestion}
-                  disabled={!result}
-                >
-                  Nächste Frage
-                </button>
-              </div>
-
-              {result && (
+              {showFeedback && selectedAnswerIndex !== null && (
                 <div
                   className={`feedback-box ${
-                    result === "correct" ? "feedback-correct" : "feedback-wrong"
+                    currentQuestion.answers[selectedAnswerIndex].isCorrect
+                      ? "feedback-correct"
+                      : "feedback-wrong"
                   }`}
                 >
-                  {result === "correct" ? (
+                  {currentQuestion.answers[selectedAnswerIndex].isCorrect ? (
                     <strong>Richtig.</strong>
                   ) : (
-                    <>
-                      <strong>Falsch.</strong>
-                      <div style={{ marginTop: 8 }}>
-                        Richtige Antwort(en): {formatCorrectAnswers(currentQuestion)}
-                      </div>
-                    </>
+                    <strong>Falsch.</strong>
                   )}
                 </div>
               )}
+
+              <div className="actions-row">
+                <button className="btn btn-primary" onClick={nextQuestion}>
+                  Nächste Frage
+                </button>
+              </div>
             </div>
-          )}
+          ) : null}
         </section>
 
         <div className="footer-note">
