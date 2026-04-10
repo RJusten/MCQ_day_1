@@ -252,10 +252,8 @@ export default function SimpleMcqTestTool() {
             />
 
             <div className="brand-text">
-              <h1 className="hero-title">
-                Vorbereitungslehrgang Gruppenführungsausbildung
-              </h1>
-              <p className="hero-subtitle">Ein Angebot des KFV Stormarn</p>
+              <h1 className="hero-title">Atemschutz Grundlehrgang</h1>
+              <p className="hero-subtitle">Wiederholung von Tag 1</p>
             </div>
           </div>
 
@@ -414,8 +412,8 @@ export default function SimpleMcqTestTool() {
         </section>
 
         <div className="footer-note">
-          Ausschließlich entwickelt für den Vorbereitungslehrgang
-          Gruppenführungsausbildung des Kreisfeuerwehrverbandes Stormarn.{" "}
+          Ausschließlich entwickelt für laufende AGT Grundlehrgänge des
+          Kreisfeuerwehrverbandes Stormarn.{" "}
           <strong>Developed by Richard Justenhoven</strong>
         </div>
       </div>
