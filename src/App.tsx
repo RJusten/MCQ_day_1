@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles.css";
 
 type AnswerOption = {
@@ -9,12 +9,15 @@ type AnswerOption = {
 
 type Question = {
   id: number;
-  topic: string;
   question: string;
   answers: AnswerOption[];
 };
 
-const ALL_TOPICS = "__ALLE_THEMEN__";
+type Score = {
+  correct: number;
+  wrong: number;
+  answered: number;
+};
 
 function parseCsvLine(line: string): string[] {
   const result: string[] = [];
@@ -47,15 +50,15 @@ function parseCsvLine(line: string): string[] {
 function parseQuestionsFromCsv(csv: string): Question[] {
   const lines = csv
     .split(/\r?\n/)
-    .map((l) => l.trim())
+    .map((line) => line.trim())
     .filter(Boolean);
 
   if (lines.length < 2) return [];
 
   const headers = parseCsvLine(lines[0]).map((h) => h.trim().toLowerCase());
 
-  const topicIndex = headers.indexOf("thema");
   const questionIndex = headers.indexOf("frage");
+  const correctIndex = headers.indexOf("korrekt");
 
   const aIndex = headers.indexOf("antwort_a");
   const aExplIndex = headers.indexOf("erklaerung_a");
@@ -65,8 +68,6 @@ function parseQuestionsFromCsv(csv: string): Question[] {
   const cExplIndex = headers.indexOf("erklaerung_c");
   const dIndex = headers.indexOf("antwort_d");
   const dExplIndex = headers.indexOf("erklaerung_d");
-
-  const correctIndex = headers.indexOf("korrekt");
 
   if (
     questionIndex === -1 ||
@@ -89,8 +90,6 @@ function parseQuestionsFromCsv(csv: string): Question[] {
   return lines.slice(1).flatMap((line, idx) => {
     const cols = parseCsvLine(line);
 
-    const topic =
-      topicIndex !== -1 && cols[topicIndex] ? cols[topicIndex].trim() : "Allgemein";
     const question = cols[questionIndex]?.trim() || "";
     const correctLetter = (cols[correctIndex] || "").trim().toUpperCase();
     const correctIndexNumber = letterMap[correctLetter];
@@ -127,7 +126,6 @@ function parseQuestionsFromCsv(csv: string): Question[] {
     return [
       {
         id: idx + 1,
-        topic,
         question,
         answers,
       },
@@ -146,17 +144,16 @@ function shuffleArray<T>(array: T[]): T[] {
 
 export default function SimpleMcqTestTool() {
   const [allQuestions, setAllQuestions] = useState<Question[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState("");
-
-  const [selectedTopic, setSelectedTopic] = useState<string>(ALL_TOPICS);
   const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
 
-  const [score, setScore] = useState({
+  const [score, setScore] = useState<Score>({
     correct: 0,
     wrong: 0,
     answered: 0,
@@ -195,40 +192,24 @@ export default function SimpleMcqTestTool() {
     loadQuestions();
   }, []);
 
-  const topics = useMemo(() => {
-    const uniqueTopics = Array.from(new Set(allQuestions.map((q) => q.topic)));
-    return uniqueTopics.sort((a, b) => a.localeCompare(b, "de"));
-  }, [allQuestions]);
-
-  const filteredQuestions = useMemo(() => {
-    if (selectedTopic === ALL_TOPICS) return allQuestions;
-    return allQuestions.filter((q) => q.topic === selectedTopic);
-  }, [allQuestions, selectedTopic]);
-
   const currentQuestion = quizQuestions[currentIndex];
   const quizFinished = quizQuestions.length > 0 && currentIndex >= quizQuestions.length;
+
   const progressPercent =
     quizQuestions.length > 0 ? (currentIndex / quizQuestions.length) * 100 : 0;
 
   function startQuiz() {
-    const questions =
-      selectedTopic === ALL_TOPICS ? allQuestions : filteredQuestions;
+    if (allQuestions.length === 0) return;
 
-    if (questions.length === 0) return;
-
-    setQuizQuestions(shuffleArray(questions));
+    setQuizQuestions(shuffleArray(allQuestions));
     setCurrentIndex(0);
     setSelectedAnswerIndex(null);
     setShowFeedback(false);
-    setScore({ correct: 0, wrong: 0, answered: 0 });
-  }
-
-  function resetQuiz() {
-    setQuizQuestions([]);
-    setCurrentIndex(0);
-    setSelectedAnswerIndex(null);
-    setShowFeedback(false);
-    setScore({ correct: 0, wrong: 0, answered: 0 });
+    setScore({
+      correct: 0,
+      wrong: 0,
+      answered: 0,
+    });
   }
 
   function handleAnswerClick(answerIndex: number) {
@@ -239,6 +220,7 @@ export default function SimpleMcqTestTool() {
 
     setSelectedAnswerIndex(answerIndex);
     setShowFeedback(true);
+
     setScore((prev) => ({
       correct: prev.correct + (isCorrect ? 1 : 0),
       wrong: prev.wrong + (isCorrect ? 0 : 1),
@@ -268,6 +250,7 @@ export default function SimpleMcqTestTool() {
               alt="Kreisfeuerwehrverband Stormarn"
               className="brand-logo-inline"
             />
+
             <div className="brand-text">
               <h1 className="hero-title">
                 Vorbereitungslehrgang Gruppenführungsausbildung
@@ -279,7 +262,7 @@ export default function SimpleMcqTestTool() {
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-label">Fragen</div>
-              <div className="stat-value">{filteredQuestions.length}</div>
+              <div className="stat-value">{allQuestions.length}</div>
             </div>
             <div className="stat-card">
               <div className="stat-label">Beantwortet</div>
@@ -294,44 +277,14 @@ export default function SimpleMcqTestTool() {
               <div className="stat-value">{score.wrong}</div>
             </div>
           </div>
-        </section>
 
-        <section className="panel-card">
-          <div className="controls-row">
-            <div className="input-group">
-              <label htmlFor="topic-select" className="input-label">
-                Thema
-              </label>
-              <select
-                id="topic-select"
-                className="number-input"
-                value={selectedTopic}
-                onChange={(e) => setSelectedTopic(e.target.value)}
-                disabled={isLoading}
-              >
-                <option value={ALL_TOPICS}>Alle Themen</option>
-                {topics.map((topic) => (
-                  <option key={topic} value={topic}>
-                    {topic}
-                  </option>
-                ))}
-              </select>
-            </div>
-
+          <div className="actions-row" style={{ marginTop: 20 }}>
             <button
               className="btn btn-primary"
               onClick={startQuiz}
-              disabled={isLoading || filteredQuestions.length === 0}
+              disabled={isLoading || allQuestions.length === 0}
             >
               Quiz starten
-            </button>
-
-            <button
-              className="btn btn-secondary"
-              onClick={resetQuiz}
-              disabled={quizQuestions.length === 0}
-            >
-              Zurücksetzen
             </button>
           </div>
         </section>
@@ -341,28 +294,45 @@ export default function SimpleMcqTestTool() {
             <p className="empty-state">Fragen werden geladen ...</p>
           ) : loadError ? (
             <p className="empty-state">
-              Fehler beim Laden von <strong>questions.csv</strong>.
+              Es konnten keine Fragen geladen werden. Bitte prüfe die Datei{" "}
+              <strong>questions.csv</strong> im public-Ordner.
               <br />
               <br />
-              {loadError}
+              Fehler: {loadError}
             </p>
-          ) : filteredQuestions.length === 0 ? (
-            <p className="empty-state">Keine Fragen für dieses Thema gefunden.</p>
+          ) : allQuestions.length === 0 ? (
+            <p className="empty-state">Es sind keine Fragen vorhanden.</p>
           ) : quizQuestions.length === 0 ? (
-            <p className="empty-state">Klicke auf „Quiz starten“.</p>
+            <p className="empty-state">Klicke oben auf „Quiz starten“.</p>
           ) : quizFinished ? (
             <div>
-              <h3 className="question-title">Quiz abgeschlossen</h3>
+              <div className="progress-wrap">
+                <div className="progress-top">
+                  <span>Quiz abgeschlossen</span>
+                  <span>
+                    {quizQuestions.length} / {quizQuestions.length}
+                  </span>
+                </div>
+                <div className="progress-bar">
+                  <div className="progress-bar-fill" style={{ width: "100%" }} />
+                </div>
+              </div>
+
+              <h3 className="question-title">Stark gemacht.</h3>
+
               <p className="empty-state">
                 Ergebnis: {score.correct} richtig, {score.wrong} falsch
               </p>
+
               <div className="actions-row">
                 <button className="btn btn-primary" onClick={startQuiz}>
                   Nochmal starten
                 </button>
               </div>
             </div>
-          ) : currentQuestion ? (
+          ) : !currentQuestion ? (
+            <p className="empty-state">Es sind keine Fragen geladen.</p>
+          ) : (
             <div>
               <div className="progress-wrap">
                 <div className="progress-top">
@@ -377,10 +347,6 @@ export default function SimpleMcqTestTool() {
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
-              </div>
-
-              <div style={{ marginBottom: 10, color: "#6b7280", fontWeight: 600 }}>
-                Thema: {currentQuestion.topic}
               </div>
 
               <h3 className="question-title">{currentQuestion.question}</h3>
@@ -412,15 +378,9 @@ export default function SimpleMcqTestTool() {
                         {answer.text}
                       </div>
 
-                      {showFeedback && isSelected && (
+                      {showFeedback && (
                         <div className="answer-explanation">
                           {answer.explanation}
-                        </div>
-                      )}
-
-                      {showFeedback && index === correctAnswerIndex && !isSelected && (
-                        <div className="answer-explanation">
-                          Richtige Antwort.
                         </div>
                       )}
                     </button>
@@ -450,7 +410,7 @@ export default function SimpleMcqTestTool() {
                 </button>
               </div>
             </div>
-          ) : null}
+          )}
         </section>
 
         <div className="footer-note">
